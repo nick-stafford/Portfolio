@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/sections/Hero.astro';
+import ProjectSlider from '../components/sections/ProjectSlider';
+import About from '../components/sections/About.astro';
+import Experience from '../components/sections/Experience.astro';
+import Contact from '../components/sections/Contact.astro';
+import ChatButton from '../components/ui/ChatButton';
+import LoadingScreen from '../components/ui/LoadingScreen';
+import CursorTrail from '../components/ui/CursorTrail';
+import ScrollAnimations from '../components/ui/ScrollAnimations';
+import EasterEgg from '../components/ui/EasterEgg';
+---
+
+<Layout title="Nick Stafford | AI Solutions Architect & Financial Software Engineer">
+  <!-- Premium Effects -->
+  <LoadingScreen client:load />
+  <CursorTrail client:load />
+  <ScrollAnimations client:load />
+  <EasterEgg client:load />
+
+  <!-- Main Content -->
+  <Hero />
+  <ProjectSlider client:visible />
+  <About />
+  <Experience />
+  <Contact />
+
+  <!-- Floating Elements -->
+  <ChatButton client:load />
+</Layout>

@@ -1,0 +1,35 @@
+<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mountainGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4B5563" />
+      <stop offset="50%" style="stop-color:#6B7280" />
+      <stop offset="100%" style="stop-color:#9CA3AF" />
+    </linearGradient>
+    <linearGradient id="peakGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#635BFF" />
+      <stop offset="100%" style="stop-color:#00D4FF" />
+    </linearGradient>
+    <linearGradient id="snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F0F0F5" />
+      <stop offset="100%" style="stop-color:#9CA3AF" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="20" cy="20" r="19" fill="#0A0A0F" stroke="#2D2D3A" stroke-width="1"/>
+
+  <!-- Back mountain -->
+  <path d="M8 30 L18 14 L28 30 Z" fill="url(#mountainGrad)" opacity="0.6" />
+
+  <!-- Front mountain with accent -->
+  <path d="M6 30 L16 10 L26 30 Z" fill="url(#mountainGrad)" />
+
+  <!-- Snow cap / Peak highlight -->
+  <path d="M16 10 L13 16 L16 14 L19 16 Z" fill="url(#snowGrad)" />
+
+  <!-- Accent line on peak -->
+  <path d="M16 10 L16 14" stroke="url(#peakGrad)" stroke-width="2" stroke-linecap="round" />
+
+  <!-- Small accent triangle -->
+  <path d="M24 30 L29 22 L34 30 Z" fill="url(#peakGrad)" opacity="0.9" />
+</svg>

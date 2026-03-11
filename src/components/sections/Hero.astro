@@ -1,0 +1,97 @@
+---
+// Hero section with 3D financial visualization
+import FinancialScene from '../3d/FinancialScene';
+import TypeWriter from '../ui/TypeWriter';
+---
+
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- 3D Canvas Background -->
+  <div class="absolute inset-0 z-0">
+    <FinancialScene client:load />
+  </div>
+
+  <!-- Gradient overlay for better text readability -->
+  <div class="absolute inset-0 z-10 bg-gradient-to-b from-bg-primary/50 via-transparent to-bg-primary"></div>
+
+  <!-- Content -->
+  <div class="container relative z-20 text-center px-6">
+    <!-- Status badge -->
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-border mb-8 animate-fade-in">
+      <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+      <span class="text-sm text-text-secondary">Available for opportunities</span>
+    </div>
+
+    <!-- Main heading -->
+    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.1s;">
+      Nick Stafford
+    </h1>
+
+    <!-- Title/Role with Typing Animation -->
+    <div class="h-12 flex items-center justify-center mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.2s;">
+      <span class="text-xl md:text-2xl">
+        <TypeWriter
+          client:load
+          words={['AI Solutions Architect', 'Financial Software Engineer', 'Full-Stack Developer', 'Quantitative Analyst', 'Problem Solver']}
+          typingSpeed={80}
+          deletingSpeed={40}
+          pauseDuration={2500}
+        />
+      </span>
+    </div>
+
+    <!-- Description -->
+    <p class="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 animate-fade-in-up opacity-0" style="animation-delay: 0.3s;">
+      Building intelligent systems at the intersection of
+      <span class="text-accent-primary">artificial intelligence</span> and
+      <span class="text-accent-secondary">quantitative finance</span>.
+      Turning complex data into actionable insights.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-wrap items-center justify-center gap-4 animate-fade-in-up opacity-0" style="animation-delay: 0.4s;">
+      <a href="#projects" class="btn btn-primary">
+        View My Work
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </a>
+      <a href="#contact" class="btn btn-secondary">
+        Get in Touch
+      </a>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-0" style="animation: bounce 2s infinite; animation-delay: 1s;">
+      <svg class="w-6 h-6 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Decorative elements -->
+  <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent z-20"></div>
+</section>
+
+<style>
+  /* Tailwind color variables */
+  .bg-bg-primary { background-color: var(--color-bg-primary); }
+  .bg-surface { background-color: var(--color-bg-surface); }
+  .bg-success { background-color: var(--color-success); }
+  .border-border { border-color: var(--color-border); }
+  .text-text-secondary { color: var(--color-text-secondary); }
+  .text-accent-primary { color: var(--color-accent-primary); }
+  .text-accent-secondary { color: var(--color-accent-secondary); }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateX(-50%) translateY(-25%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translateX(-50%) translateY(0);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+      opacity: 1;
+    }
+  }
+</style>

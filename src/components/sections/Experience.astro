@@ -1,0 +1,104 @@
+---
+// Experience timeline section
+interface Experience {
+  title: string;
+  company: string;
+  period: string;
+  description: string;
+  highlights: string[];
+}
+
+const experiences: Experience[] = [
+  {
+    title: "Solutions Architect",
+    company: "Independent / Consulting",
+    period: "2023 - Present",
+    description: "Building AI-powered financial tools and enterprise solutions.",
+    highlights: [
+      "Developed ConvexityAI stock scanner with Tier 1/2 momentum alerts",
+      "Architected RAG systems using vector databases for persistent AI memory",
+      "Integrated LLMs (Groq, OpenAI) for automated market research"
+    ]
+  },
+  {
+    title: "Salesforce Developer",
+    company: "Enterprise Solutions",
+    period: "2020 - 2023",
+    description: "Full-stack Salesforce development and automation.",
+    highlights: [
+      "Built custom Lightning components and Apex automation",
+      "Designed integration architectures for financial workflows",
+      "Led migration projects handling millions of records"
+    ]
+  },
+  {
+    title: "Software Engineer",
+    company: "Financial Technology",
+    period: "2018 - 2020",
+    description: "Backend development for fintech applications.",
+    highlights: [
+      "Developed REST APIs for transaction processing",
+      "Implemented data pipelines for market analytics",
+      "Built automated reporting systems"
+    ]
+  }
+];
+---
+
+<section id="experience" class="py-24" style="background: var(--color-bg-secondary);">
+  <div class="container mx-auto px-6">
+    <div class="section-header">
+      <span class="section-label">Background</span>
+      <h2 class="text-4xl font-bold" style="color: var(--color-text-primary);">Experience</h2>
+    </div>
+
+    <!-- Timeline -->
+    <div class="relative max-w-4xl mx-auto">
+      <!-- Timeline line -->
+      <div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-px transform md:-translate-x-1/2"
+        style="background: linear-gradient(to bottom, var(--color-accent-primary), var(--color-accent-secondary), transparent);">
+      </div>
+
+      <!-- Experience items -->
+      {experiences.map((exp, index) => (
+        <div class={`relative flex flex-col md:flex-row gap-8 mb-12 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+          <!-- Timeline dot -->
+          <div class="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full animate-pulse-glow"
+            style="background: var(--gradient-primary); top: 0;">
+          </div>
+
+          <!-- Content -->
+          <div class={`flex-1 ml-8 md:ml-0 ${index % 2 === 0 ? 'md:pr-16 md:text-right' : 'md:pl-16'}`}>
+            <div class="glass-card">
+              <span class="text-sm font-medium" style="color: var(--color-accent-primary);">{exp.period}</span>
+              <h3 class="text-xl font-bold mt-2" style="color: var(--color-text-primary);">{exp.title}</h3>
+              <p class="text-lg" style="color: var(--color-text-secondary);">{exp.company}</p>
+              <p class="mt-3" style="color: var(--color-text-muted);">{exp.description}</p>
+
+              <ul class={`mt-4 space-y-2 ${index % 2 === 0 ? 'md:text-right' : ''}`}>
+                {exp.highlights.map(highlight => (
+                  <li class="flex items-start gap-2" style={index % 2 === 0 ? 'justify-content: flex-end;' : ''}>
+                    {index % 2 !== 0 && (
+                      <svg class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--color-success);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    <span style="color: var(--color-text-secondary);">{highlight}</span>
+                    {index % 2 === 0 && (
+                      <svg class="w-5 h-5 mt-0.5 flex-shrink-0" style="color: var(--color-success);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Spacer for alternating layout -->
+          <div class="hidden md:block flex-1"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
