@@ -18,10 +18,23 @@ interface Project {
   chartImage?: string;
   liveDemo?: string;
   github?: string;
-  type: 'app' | 'analysis' | 'animation' | 'tax' | 'integration' | 'sales' | 'devops';
+  comingSoon?: boolean;
+  noEmbed?: boolean; // app blocks iframe embedding (e.g. Streamlit auth); open in a new tab instead
+  type: 'app' | 'analysis' | 'animation' | 'tax' | 'integration' | 'sales' | 'devops' | 'web';
 }
 
 const projects: Project[] = [
+  {
+    id: 9,
+    title: 'Sightline',
+    subtitle: 'Financial Statement Analysis',
+    description: 'Nine years of YETI\'s SEC filings pulled straight from EDGAR, run through the metrics an analyst would actually look at. Altman and Piotroski health scores, peer benchmarking against seven apparel names, and a rule engine that flags divergences. It caught inventory growing 127% against 29% revenue growth a full year before gross margin fell 990 basis points.',
+    tech: ['Python', 'SQL', 'DuckDB', 'React', 'TypeScript', 'Recharts', 'Groq API'],
+    image: '/images/sightline.png',
+    liveDemo: 'https://nick-stafford.github.io/sightline/',
+    github: 'https://github.com/nick-stafford/sightline',
+    type: 'web',
+  },
   {
     id: 1,
     title: 'ConvexityAI',
@@ -29,8 +42,9 @@ const projects: Project[] = [
     description: 'AI-powered stock momentum scanner that detects stocks starting to trend up after consolidation. Features Tier 1/2 alert classification, sector rotation analysis, and AI research using Groq\'s llama-3.3-70b model.',
     tech: ['Python', 'Streamlit', 'Plotly', 'Groq API', 'SQLite', 'LanceDB'],
     image: '/images/convexity-dashboard.png',
-    liveDemo: 'http://localhost:8501',
-    github: 'https://github.com/nick/convexityai',
+    liveDemo: 'https://convexityai.streamlit.app',
+    github: 'https://github.com/nick-stafford/404',
+    noEmbed: true,
     type: 'app',
   },
   {
@@ -74,8 +88,19 @@ const projects: Project[] = [
     description: 'AI-powered tax optimization that cross-references your financial data against 75,000+ pages of IRC tax code to find every legal deduction. Full audit trail and compliance documentation included.',
     tech: ['Python', 'RAG', 'GPT-4', 'Vector DB', 'FastAPI', 'PDF Parsing'],
     image: '/images/taxcode-ai.png',
-    github: 'https://github.com/nick/taxcode-ai',
+    github: 'https://github.com/nick-stafford/404',
     type: 'tax',
+  },
+  {
+    id: 8,
+    title: 'NS Accounting',
+    subtitle: 'Modern CPA Firm Website',
+    description: 'A sleek, fully responsive marketing site for my own accounting firm — tax preparation, bookkeeping, and fractional CFO advisory. Features a cinematic video hero montage, a custom SVG coin logo, and a conversion-focused, paperless design. Statically generated and deployed on Vercel with auto-deploys from GitHub.',
+    tech: ['Next.js 16', 'React', 'Tailwind CSS v4', 'TypeScript', 'Vercel'],
+    image: '/images/ns-accounting.png',
+    liveDemo: 'https://ns-accounting.vercel.app',
+    github: 'https://github.com/nick-stafford/404',
+    type: 'web',
   },
   {
     id: 5,
@@ -84,7 +109,7 @@ const projects: Project[] = [
     description: 'Unified integration platform that connects your entire business stack. Real-time bidirectional sync between CRM, accounting, communication, and cloud services. One API to rule them all.',
     tech: ['Python', 'FastAPI', 'Redis', 'Kafka', 'OAuth2', 'Webhooks'],
     image: '/images/synapse-hub.png',
-    github: 'https://github.com/nick/synapsehub',
+    github: 'https://github.com/nick-stafford/404',
     type: 'integration',
   },
   {
@@ -94,7 +119,7 @@ const projects: Project[] = [
     description: 'AI that monitors every client touchpoint - emails, calls, support tickets, CRM - to surface at-risk accounts, identify upsell opportunities, and score leads based on sentiment and buying signals.',
     tech: ['Python', 'NLP', 'Salesforce API', 'GPT-4', 'FastAPI', 'Redis'],
     image: '/images/clientpulse.png',
-    github: 'https://github.com/nick/clientpulse',
+    github: 'https://github.com/nick-stafford/404',
     type: 'sales',
   },
   {
@@ -104,7 +129,7 @@ const projects: Project[] = [
     description: 'End-to-end deployment automation from code to production. Builds, tests, containerizes, and deploys to Kubernetes with zero-downtime rolling updates. Full observability and rollback support.',
     tech: ['Python', 'Docker', 'Kubernetes', 'AWS EKS', 'GitHub Actions', 'Terraform'],
     image: '/images/glp-pipeline.png',
-    github: 'https://github.com/nick/glp',
+    github: 'https://github.com/nick-stafford/404',
     type: 'devops',
   },
 ];
@@ -422,7 +447,7 @@ function StockChartAnimation() {
 }
 
 // Live Demo Embed Modal
-function LiveDemoModal({ url, onClose }: { url: string; onClose: () => void }) {
+function LiveDemoModal({ url, title, onClose }: { url: string; title: string; onClose: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -449,7 +474,7 @@ function LiveDemoModal({ url, onClose }: { url: string; onClose: () => void }) {
               <span className="w-3 h-3 rounded-full bg-yellow-500" />
               <span className="w-3 h-3 rounded-full bg-green-500" />
             </div>
-            <span className="text-white font-medium">Live Demo - ConvexityAI</span>
+            <span className="text-white font-medium">Live Site - {title}</span>
           </div>
           <div className="flex items-center gap-2">
             <a
@@ -573,7 +598,8 @@ export default function ProjectSlider() {
                      currentProject.type === 'tax' ? 'Tax Intelligence' :
                      currentProject.type === 'integration' ? 'Enterprise Integration' :
                      currentProject.type === 'sales' ? 'Sales Intelligence' :
-                     currentProject.type === 'devops' ? 'DevOps & CI/CD' : 'Automation'}
+                     currentProject.type === 'devops' ? 'DevOps & CI/CD' :
+                     currentProject.type === 'web' ? 'Live Website' : 'Automation'}
                   </span>
                   <span className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
                     {String(currentIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
@@ -611,9 +637,24 @@ export default function ProjectSlider() {
 
                 {/* Action buttons */}
                 <div className="flex flex-wrap gap-4 pt-4">
-                  {currentProject.liveDemo && currentProject.type === 'app' && (
+                  {currentProject.comingSoon && (
                     <button
-                      onClick={() => setShowLiveDemo(true)}
+                      type="button"
+                      disabled
+                      className="btn btn-primary opacity-60 cursor-not-allowed"
+                    >
+                      Coming Soon
+                    </button>
+                  )}
+                  {!currentProject.comingSoon && currentProject.liveDemo && (currentProject.type === 'app' || currentProject.type === 'web') && (
+                    <button
+                      onClick={() => {
+                        if (currentProject.noEmbed) {
+                          window.open(currentProject.liveDemo, '_blank', 'noopener,noreferrer');
+                        } else {
+                          setShowLiveDemo(true);
+                        }
+                      }}
                       className="btn btn-primary"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -671,6 +712,37 @@ export default function ProjectSlider() {
                   /* GLP Pipeline Animation */
                   <div className="glass-card p-6" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
                     <GLPAnimation />
+                  </div>
+                ) : currentProject.type === 'web' ? (
+                  /* NS Accounting — live website preview (real clip from the site) */
+                  <div className="glass-card p-3" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
+                    {/* Browser chrome */}
+                    <div className="flex items-center gap-2 px-2 py-2 mb-2">
+                      <span className="code-dot red"></span>
+                      <span className="code-dot yellow"></span>
+                      <span className="code-dot green"></span>
+                      <div
+                        className="ml-2 flex-1 flex items-center gap-2 px-3 py-1 rounded-md text-xs font-mono"
+                        style={{ backgroundColor: 'var(--color-bg-secondary)', color: 'var(--color-text-muted)' }}
+                      >
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: '#10b981' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        ns-accounting.vercel.app
+                      </div>
+                    </div>
+                    {/* Live clip pulled from the actual site */}
+                    <div className="relative w-full overflow-hidden rounded-lg" style={{ aspectRatio: '16 / 10', backgroundColor: '#0a0a0f' }}>
+                      <video
+                        src="/clips/ns-accounting-numbers.mp4"
+                        poster="/clips/ns-accounting-poster.jpg"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
                   </div>
                 ) : currentProject.type === 'app' ? (
                   /* ConvexityAI Animation */
@@ -744,6 +816,7 @@ export default function ProjectSlider() {
         {showLiveDemo && currentProject.liveDemo && (
           <LiveDemoModal
             url={currentProject.liveDemo}
+            title={currentProject.title}
             onClose={() => setShowLiveDemo(false)}
           />
         )}
