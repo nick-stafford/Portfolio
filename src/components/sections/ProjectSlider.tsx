@@ -26,13 +26,13 @@ interface Project {
 const projects: Project[] = [
   {
     id: 9,
-    title: 'Sightline',
+    title: 'YETI Coverage',
     subtitle: 'Financial Statement Analysis',
     description: 'Nine years of YETI\'s SEC filings pulled straight from EDGAR, run through the metrics an analyst would actually look at. Altman and Piotroski health scores, peer benchmarking against seven apparel names, and a rule engine that flags divergences. It caught inventory growing 127% against 29% revenue growth a full year before gross margin fell 990 basis points.',
     tech: ['Python', 'SQL', 'DuckDB', 'React', 'TypeScript', 'Recharts', 'Groq API'],
-    image: '/images/sightline.png',
-    liveDemo: 'https://nick-stafford.github.io/sightline/',
-    github: 'https://github.com/nick-stafford/sightline',
+    image: '/images/yeti-coverage.png',
+    liveDemo: 'https://nick-stafford.github.io/yeti-coverage/',
+    github: 'https://github.com/nick-stafford/yeti-coverage',
     type: 'web',
   },
   {
