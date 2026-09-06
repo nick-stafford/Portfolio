@@ -25,9 +25,9 @@ interface Project {
 const allProjects: Project[] = [
   {
     id: 12,
-    title: 'Aster Reconcile',
+    title: 'Financial Ontology',
     subtitle: 'Payment Settlement Control System',
-    description: 'Processor payments, bank deposits, and settlement journals rarely agree, and the gap is where money goes missing. Aster ingests all three through typed source contracts, reconciles them in SQL at a declared settlement grain, and exposes the result as linked objects an analyst can investigate. A discrepancy becomes a proposed correcting journal, an independent controller approves it, and a transactional outbox delivers it to a separate ERP. The system then re-ingests the posting and reconciles again before closing the case. Built as a Palantir-inspired simulation on synthetic data, not on Foundry.',
+    description: 'Processor payments, bank deposits, and settlement journals rarely agree, and the gap is where money goes missing. The system ingests all three through typed source contracts, reconciles them in SQL at a declared settlement grain, and exposes the result as linked objects an analyst can investigate. A discrepancy becomes a proposed correcting journal, an independent controller approves it, and a transactional outbox delivers it to a separate ERP. The system then re-ingests the posting and reconciles again before closing the case. Built as a Palantir-inspired simulation on synthetic data, not on Foundry.',
     tech: ['Python', 'SQL', 'FastAPI', 'React', 'TypeScript', 'Generated Types', 'pytest'],
     image: '/images/aster-reconcile.png',
     liveDemo: 'https://nick-stafford.github.io/financial-ontology/',
@@ -170,7 +170,7 @@ const allProjects: Project[] = [
 // with the finance automation work that matches how he positions himself.
 // To reorder the slider, reorder this list. Nothing else needs to move.
 const ORDER = [
-  'Aster Reconcile',
+  'Financial Ontology',
   'ConvexityAI',
   'NS Accounting',
   'AP Automation',
