@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FinancialStatementAnimation from '../ui/FinancialStatementAnimation';
-import TaxCodeAnimation from '../ui/TaxCodeAnimation';
-import SynapseHubAnimation from '../ui/SynapseHubAnimation';
-import ClientPulseAnimation from '../ui/ClientPulseAnimation';
-import GLPAnimation from '../ui/GLPAnimation';
 import ConvexityAIAnimation from '../ui/ConvexityAIAnimation';
 
 interface Project {
@@ -15,15 +11,18 @@ interface Project {
   tech: string[];
   image: string;
   codePreview?: string;
+  codeFile?: string;  // filename shown in the code block header
   chartImage?: string;
   liveDemo?: string;
   github?: string;
   comingSoon?: boolean;
   noEmbed?: boolean; // app blocks iframe embedding (e.g. Streamlit auth); open in a new tab instead
-  type: 'app' | 'analysis' | 'animation' | 'tax' | 'integration' | 'sales' | 'devops' | 'web';
+  clip?: string;     // 'web' only: screen recording. Without one the card frames the live site
+  poster?: string;
+  type: 'app' | 'analysis' | 'animation' | 'code' | 'web';
 }
 
-const projects: Project[] = [
+const allProjects: Project[] = [
   {
     id: 9,
     title: 'YETI Coverage',
@@ -73,6 +72,64 @@ const projects: Project[] = [
     type: 'analysis',
   },
   {
+    id: 10,
+    title: 'AP Automation',
+    subtitle: 'Invoice to Posted Journal Entry',
+    description: 'Accounts payable from intake to a posted journal entry, with the controls kept intact. Document AI extracts the invoice, an LLM codes it to a GL account, and then deterministic logic decides: three-way match against PO and receipt, duplicate and variance detection, segregation of duties, and approval thresholds enforced in code. Every step lands in a timestamped audit trail. If the LLM is offline, the rules still process the invoice.',
+    tech: ['Python', 'Streamlit', 'Groq LLM', 'Vision Document AI', 'PyMuPDF', 'pandas'],
+    image: '/images/ap-automation.png',
+    github: 'https://github.com/nick-stafford/ai-finance-ap-automation',
+    codeFile: 'controls.py',
+    codePreview: `def post_invoice(inv: Invoice) -> JournalEntry | Exception:
+    """The AI extracts and codes. The rules decide whether it posts."""
+    if is_duplicate(inv.vendor, inv.invoice_no):
+        return Exception("duplicate invoice")
+
+    match = three_way_match(inv, po=inv.po, receipt=inv.receipt)
+    if match.variance > TOLERANCE:
+        return Exception(f"off-PO by {match.variance}")
+
+    if inv.total > APPROVAL_LIMIT[inv.approver.role]:
+        return Exception("exceeds approver threshold")
+
+    entry = JournalEntry(
+        debit=code_expense(inv),      # LLM, deterministic fallback
+        credit=accounts_payable(inv.vendor),
+    )
+    audit.log(inv.id, entry, actor=inv.approver)
+    return entry if entry.balances() else Exception("does not balance")`,
+    type: 'code',
+  },
+  {
+    id: 11,
+    title: 'Bank Reconciliation Engine',
+    subtitle: 'Plaid Feed to QuickBooks Ledger',
+    description: 'Pulls transactions from a bank feed and from the accounting ledger, then matches them with a description-weighted, duplicate-aware scoring engine and surfaces only the exceptions. Adapters sit behind clean interfaces so the matching core stays platform-neutral, and an LLM writes the plain-English summary of what cleared and what did not. Reconciliation that used to take an afternoon runs in seconds and hands back only what needs a human.',
+    tech: ['Python', 'Plaid API', 'QuickBooks', 'Groq LLM', 'Streamlit', 'pandas'],
+    image: '/images/bank-recon.png',
+    github: 'https://github.com/nick-stafford/plaid-bank-recon',
+    codeFile: 'recon.py',
+    codePreview: `def reconcile(bank_txns, book_txns, tolerance=Decimal("0.01")):
+    """Score every candidate pair. Return only what fails to clear."""
+    claimed = set()
+
+    for b in bank_txns:
+        candidates = [
+            (score(b, k), k) for k in book_txns
+            if k.id not in claimed
+            and abs(b.amount - k.amount) <= tolerance
+            and abs((b.date - k.date).days) <= DATE_WINDOW
+        ]
+
+        best = max(candidates, default=None)
+        if best and best[0] >= CONFIDENT:
+            claimed.add(best[1].id)
+            yield Matched(b, best[1], confidence=best[0])
+        else:
+            yield Unreconciled(b, reason=explain(b, candidates))`,
+    type: 'code',
+  },
+  {
     id: 3,
     title: 'Financial Statement Builder',
     subtitle: 'Automated Report Generation',
@@ -80,16 +137,6 @@ const projects: Project[] = [
     tech: ['Python', 'GPT-4', 'Pandas', 'ReportLab', 'FastAPI'],
     image: '/images/financial-statement.png',
     type: 'animation',
-  },
-  {
-    id: 4,
-    title: 'TaxCode AI',
-    subtitle: 'Intelligent Tax Strategy Engine',
-    description: 'AI-powered tax optimization that cross-references your financial data against 75,000+ pages of IRC tax code to find every legal deduction. Full audit trail and compliance documentation included.',
-    tech: ['Python', 'RAG', 'GPT-4', 'Vector DB', 'FastAPI', 'PDF Parsing'],
-    image: '/images/taxcode-ai.png',
-    github: 'https://github.com/nick-stafford/404',
-    type: 'tax',
   },
   {
     id: 8,
@@ -100,49 +147,38 @@ const projects: Project[] = [
     image: '/images/ns-accounting.png',
     liveDemo: 'https://ns-accounting.vercel.app',
     github: 'https://github.com/nick-stafford/404',
+    clip: '/clips/ns-accounting-numbers.mp4',
+    poster: '/clips/ns-accounting-poster.jpg',
     type: 'web',
-  },
-  {
-    id: 5,
-    title: 'SynapseHub',
-    subtitle: 'Enterprise Integration Orchestrator',
-    description: 'Unified integration platform that connects your entire business stack. Real-time bidirectional sync between CRM, accounting, communication, and cloud services. One API to rule them all.',
-    tech: ['Python', 'FastAPI', 'Redis', 'Kafka', 'OAuth2', 'Webhooks'],
-    image: '/images/synapse-hub.png',
-    github: 'https://github.com/nick-stafford/404',
-    type: 'integration',
-  },
-  {
-    id: 6,
-    title: 'ClientPulse AI',
-    subtitle: 'Sales Intelligence & Customer Health',
-    description: 'AI that monitors every client touchpoint - emails, calls, support tickets, CRM - to surface at-risk accounts, identify upsell opportunities, and score leads based on sentiment and buying signals.',
-    tech: ['Python', 'NLP', 'Salesforce API', 'GPT-4', 'FastAPI', 'Redis'],
-    image: '/images/clientpulse.png',
-    github: 'https://github.com/nick-stafford/404',
-    type: 'sales',
-  },
-  {
-    id: 7,
-    title: 'GLP',
-    subtitle: 'CI/CD Pipeline Orchestrator',
-    description: 'End-to-end deployment automation from code to production. Builds, tests, containerizes, and deploys to Kubernetes with zero-downtime rolling updates. Full observability and rollback support.',
-    tech: ['Python', 'Docker', 'Kubernetes', 'AWS EKS', 'GitHub Actions', 'Terraform'],
-    image: '/images/glp-pipeline.png',
-    github: 'https://github.com/nick-stafford/404',
-    type: 'devops',
   },
 ];
 
+// Slider order. Nick set the first two; the rest run strongest-first, leading
+// with the finance automation work that matches how he positions himself.
+// To reorder the slider, reorder this list. Nothing else needs to move.
+const ORDER = [
+  'ConvexityAI',
+  'NS Accounting',
+  'AP Automation',
+  'Bank Reconciliation Engine',
+  'YETI Coverage',
+  'Financial Statement Builder',
+  'Tungsten Analysis',
+];
+
+const projects = [...allProjects].sort(
+  (a, b) => ORDER.indexOf(a.title) - ORDER.indexOf(b.title)
+);
+
 // Code block component with syntax highlighting simulation
-function CodeBlock({ code }: { code: string }) {
+function CodeBlock({ code, filename = 'tungsten_analysis.py' }: { code: string; filename?: string }) {
   return (
     <div className="code-block w-full max-w-xl">
       <div className="code-header">
         <span className="code-dot red"></span>
         <span className="code-dot yellow"></span>
         <span className="code-dot green"></span>
-        <span className="ml-4 text-xs text-gray-400 font-mono">tungsten_analysis.py</span>
+        <span className="ml-4 text-xs text-gray-400 font-mono">{filename}</span>
       </div>
       <div className="code-content text-sm leading-relaxed">
         <pre className="overflow-x-auto">
@@ -595,10 +631,7 @@ export default function ProjectSlider() {
                     style={{ backgroundColor: 'var(--color-bg-surface)', color: 'var(--color-accent-primary)' }}>
                     {currentProject.type === 'app' ? 'Application' :
                      currentProject.type === 'analysis' ? 'Data Analysis' :
-                     currentProject.type === 'tax' ? 'Tax Intelligence' :
-                     currentProject.type === 'integration' ? 'Enterprise Integration' :
-                     currentProject.type === 'sales' ? 'Sales Intelligence' :
-                     currentProject.type === 'devops' ? 'DevOps & CI/CD' :
+                     currentProject.type === 'code' ? 'Finance Automation' :
                      currentProject.type === 'web' ? 'Live Website' : 'Automation'}
                   </span>
                   <span className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
@@ -693,26 +726,9 @@ export default function ProjectSlider() {
                   <div className="glass-card p-6" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
                     <FinancialStatementAnimation />
                   </div>
-                ) : currentProject.type === 'tax' ? (
-                  /* TaxCode AI Animation */
-                  <div className="glass-card p-6" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
-                    <TaxCodeAnimation />
-                  </div>
-                ) : currentProject.type === 'integration' ? (
-                  /* SynapseHub Animation */
-                  <div className="glass-card p-6" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
-                    <SynapseHubAnimation />
-                  </div>
-                ) : currentProject.type === 'sales' ? (
-                  /* ClientPulse AI Animation */
-                  <div className="glass-card p-6" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
-                    <ClientPulseAnimation />
-                  </div>
-                ) : currentProject.type === 'devops' ? (
-                  /* GLP Pipeline Animation */
-                  <div className="glass-card p-6" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
-                    <GLPAnimation />
-                  </div>
+                ) : currentProject.type === 'code' && currentProject.codePreview ? (
+                  /* Finance automation projects: the code is the visual */
+                  <CodeBlock code={currentProject.codePreview} filename={currentProject.codeFile} />
                 ) : currentProject.type === 'web' ? (
                   /* NS Accounting — live website preview (real clip from the site) */
                   <div className="glass-card p-3" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
@@ -728,20 +744,30 @@ export default function ProjectSlider() {
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: '#10b981' }}>
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
-                        ns-accounting.vercel.app
+                        {currentProject.liveDemo?.replace(/^https?:\/\//, '')}
                       </div>
                     </div>
-                    {/* Live clip pulled from the actual site */}
+                    {/* A recorded clip if the project has one, otherwise frame the real site */}
                     <div className="relative w-full overflow-hidden rounded-lg" style={{ aspectRatio: '16 / 10', backgroundColor: '#0a0a0f' }}>
-                      <video
-                        src="/clips/ns-accounting-numbers.mp4"
-                        poster="/clips/ns-accounting-poster.jpg"
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
+                      {currentProject.clip ? (
+                        <video
+                          src={currentProject.clip}
+                          poster={currentProject.poster}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      ) : (
+                        <iframe
+                          src={currentProject.liveDemo}
+                          title={currentProject.title}
+                          loading="lazy"
+                          sandbox="allow-scripts allow-same-origin"
+                          className="absolute inset-0 w-full h-full bg-white"
+                        />
+                      )}
                     </div>
                   </div>
                 ) : currentProject.type === 'app' ? (
